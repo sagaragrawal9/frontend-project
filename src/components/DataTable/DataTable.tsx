@@ -22,8 +22,7 @@ export const DataTable = () => {
     data, 
     columns, 
     columnOrder, 
-    pagination, 
-    rowSelection,
+    pagination,
     loading 
   } = state;
   

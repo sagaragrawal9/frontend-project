@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { 
-  ArrowDown, 
-  ArrowUp, 
+import {
+  ArrowDown,
+  ArrowUp,
   GripVertical,
   Info
 } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 import { ColumnDef, SortState } from '@/types/table';
 import { cn } from '@/lib/utils';
 import { useTable } from '@/context/TableContext';
@@ -17,18 +22,17 @@ interface TableHeaderProps {
 export const TableHeader = ({ columns }: TableHeaderProps) => {
   const { state, setSorting, toggleAllSelection, setColumnSizing } = useTable();
   const { columnOrder, rowSelection, sorting, data } = state;
+
   const [draggingColumn, setDraggingColumn] = useState<string | null>(null);
   const [resizingColumn, setResizingColumn] = useState<string | null>(null);
   const [resizeStartX, setResizeStartX] = useState<number>(0);
   const [initialWidth, setInitialWidth] = useState<number>(0);
-  
-  const allSelected = 
-    data.length > 0 && 
-    data.every(row => rowSelection[row.id]);
-  
-  const someSelected = 
-    !allSelected && 
-    data.some(row => rowSelection[row.id]);
+
+  const allSelected =
+    data.length > 0 && data.every(row => rowSelection[row.id]);
+
+  const someSelected =
+    !allSelected && data.some(row => rowSelection[row.id]);
 
   const handleResizeStart = (e: React.MouseEvent, columnId: string) => {
     setResizingColumn(columnId);
@@ -83,23 +87,22 @@ export const TableHeader = ({ columns }: TableHeaderProps) => {
 
     const handleSortClick = () => {
       if (!isSortable) return;
-      
+
       let direction: SortState['direction'] = 'asc';
-      
       if (sortDirection === 'asc') {
         direction = 'desc';
       } else if (sortDirection === 'desc') {
         direction = null;
       }
-      
+
       setSorting(column.id, direction);
     };
 
     return (
       <div
         className={cn(
-          "flex items-center gap-2 px-3 py-3.5 text-sm font-medium text-gray-900",
-          isSortable && "cursor-pointer select-none"
+          'flex items-center gap-2 px-3 py-3.5 text-sm font-medium text-gray-900',
+          isSortable && 'cursor-pointer select-none'
         )}
         onClick={isSortable ? handleSortClick : undefined}
       >
@@ -137,14 +140,15 @@ export const TableHeader = ({ columns }: TableHeaderProps) => {
         {columnOrder.map((columnId) => {
           const column = columns.find((col) => col.id === columnId);
           if (!column) return null;
-          
+
           return (
             <th
               key={column.id}
               className={cn(
-                "group relative border-b border-r border-gray-200 font-medium bg-gray-50",
-                column.isSticky && "sticky left-0 z-10",
-                column.meta?.isCheckbox && "w-12"
+                'group relative border-b border-r border-gray-200 font-medium bg-gray-50',
+                column.isSticky && 'sticky left-0 z-10',
+                column.meta?.isCheckbox && 'w-12',
+                draggingColumn === column.id && 'bg-primary/10'
               )}
               style={{
                 width: state.columnSizing[column.id],
@@ -153,14 +157,15 @@ export const TableHeader = ({ columns }: TableHeaderProps) => {
               data-column-id={column.id}
             >
               {renderColumnHeader(column)}
-              
+
               {column.enableDragging && (
                 <div
-                  className="absolute inset-y-0 left-0 w-6 cursor-move opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  className="absolute inset-y-0 left-0 w-6 cursor-move flex items-center justify-center bg-muted/10 hover:bg-muted/20 transition-colors rounded-r"
                   draggable
                   onDragStart={(e) => {
                     setDraggingColumn(column.id);
                     e.dataTransfer.setData('text/plain', column.id);
+
                     const el = document.createElement('div');
                     el.className = 'bg-white border border-primary shadow-md rounded p-2 text-sm';
                     el.innerText = column.header;
@@ -173,10 +178,10 @@ export const TableHeader = ({ columns }: TableHeaderProps) => {
                   <GripVertical className="h-4 w-4 text-gray-400" />
                 </div>
               )}
-              
+
               {column.enableResizing && (
                 <div
-                  className="absolute inset-y-0 right-0 w-2 cursor-col-resize opacity-0 group-hover:opacity-100 hover:bg-primary/20 transition-colors"
+                  className="absolute inset-y-0 right-0 w-2 cursor-col-resize bg-muted/5 hover:bg-primary/30 transition-colors"
                   onMouseDown={(e) => handleResizeStart(e, column.id)}
                 />
               )}

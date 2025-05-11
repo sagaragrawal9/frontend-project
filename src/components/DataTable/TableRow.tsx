@@ -64,7 +64,9 @@ export const TableRow = ({ row }: TableRowProps) => {
               </div>
             ) : column.id === 'amount' ? (
               <div className="font-medium text-right">
-                ${row[column.accessorKey] ? row[column.accessorKey].toFixed(2) : '0.00'}
+                {typeof row[column.accessorKey] === 'number'
+  ? `$${(row[column.accessorKey] as number).toFixed(2)}`
+  : '$0.00'}
               </div>
             ) : column.id === 'tooltip' ? (
               <TooltipProvider>
